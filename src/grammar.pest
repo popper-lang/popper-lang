@@ -1,0 +1,113 @@
+letter = _{'a' .. 'z' | 'A' .. 'Z'}
+digit = _{'0' .. '9'}
+
+ident = @{ !reserved_word ~ (letter ~ (letter | digit | "_")*) | op }
+string = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+number = @{ digit+ }
+reserved_word = _{ keyword | type_builtin | bool  }
+keyword = _{ 
+    "if"    |
+    "else"  |
+    "while" | 
+    "for"   | 
+    "let"   | 
+    "in"    | 
+    "def"   |
+    "struct"|
+    "impl"  |
+    "to"    | 
+    "cast"  |
+    "fun"   |
+    "use"   |
+    "as"    
+}
+
+assign_op = { "=" }
+bool = { "true" | "false" }
+list = { "[" ~ (expression ~ ",")* ~ "]" }
+type_builtin = { "int" | "string" | "bool" | "list" }
+typeof_expression = { "typeof" ~ expression }
+
+block = { "{" ~  "\n"* ~ (statement ~ "\n"+) * ~ statement? ~ "}" }
+op = _{
+    "+"     |
+    "-"     |
+    "*"     |
+    "/"     |
+    "%"     |
+    "^"     |
+    "=="    |
+    "!="    |
+    "<"     |
+    ">"     |
+    "<="    |
+    ">="    |
+    "&&"    |
+    "||"    
+}
+
+
+declaration = { "let" ~ ident ~ "=" ~ expression }
+declaration_with_type = { "let" ~ ident ~ ":" ~ type_builtin ~ "=" ~ expression}
+declaration_attr = _{ (ident ~ ":" ~ type_builtin)? }
+
+assignment = { ident ~ "=" ~ expression }
+
+if_statement = { "if" ~ expression ~ block }
+if_else_statement = { "if" ~ expression ~ block ~ "else" ~ block }
+
+while_statement = { "while" ~ expression ~ block }
+for_statement   = { "for" ~ ident ~ "in" ~ expression ~ block }
+
+// fun_statement   = { "def" ~ ident ~ "(" ~ (ident ~ ":" ~ type_builtin)? ~ ("," ~ ident ~ ":" ~ type_builtin)* ~ ")" ~ block }
+fun_statement   = { "fun" ~ ident ~ "with" ~ ((ident ~ ":" ~ type_builtin)? ~ ("," ~ ident ~ ":" ~ type_builtin)*)  ~ assign_op ~ block }
+impl_statement  = { "impl" ~ ident ~ fun_statement }
+struct_statement = { "struct" ~ ident ~ "{" ~ declaration_attr ~ ("," ~ declaration_attr)* ~ "}" }
+use_statement = { "use" ~ string ~ "as" ~ ident }
+
+to_expression = { "cast" ~ expression ~ "to" ~ type_builtin }
+call_expression = { ident ~ expression+ }
+init_struct_expression = { ident ~ "{" ~ (ident ~ "=" ~ expression) ~ ("," ~ ident ~ "=" ~ expression)* ~ "}" }
+attr_expression = { value ~ "." ~ ident }
+call_attr_expression = { value ~ "." ~ ident ~ expression+  }
+range_expression = { value ~ ":" ~ expression }
+parent_expression = { "(" ~ expression ~ ")" }
+index_expression = { ident ~ "[" ~ expression ~ "]" }
+
+expression = _{
+    call_expression         |
+    init_struct_expression  |
+    call_attr_expression    |
+    attr_expression         |
+    range_expression        |
+    to_expression           |
+    typeof_expression       |
+    parent_expression       |
+    index_expression        |
+    value                              
+}
+
+
+statement = _{
+    (
+    expression              |
+    block                   |
+    assignment              |
+    declaration_with_type   |
+    declaration             |
+    if_else_statement       |
+    if_statement            |
+    while_statement         |
+    for_statement           |
+    fun_statement           |
+    struct_statement        |
+    impl_statement          |
+    use_statement
+    )
+}
+program = _{ SOI ~ "\n"* ~ (statement ~ "\n"+) * ~ statement? ~ EOI }
+value = _{ ident | number | bool | list | type_builtin | string }
+
+
+WHITESPACE = _{ " " | "\t"}
+COMMENT = _{ "//" ~ (!"\n" ~ ANY)* }

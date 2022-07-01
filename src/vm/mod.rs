@@ -1,17 +1,19 @@
+use pest::Parser;
+
+use crate::parser::build_ast;
 use crate::std_t::Builtin;
 use std::collections::HashMap;
+use std::fs;
 use std::rc::Rc;
 
 use crate::errors::*;
 use crate::expr::ident::Ident;
-use crate::std_t::BuiltinFunction;
+use crate::std_t::function::BuiltinFunction;
 use crate::value::Function;
 use crate::value::Type;
 use crate::value::Value;
 use crate::value::Var;
-
-use lalrpop_util::lalrpop_mod;
-use std::fs;
+use crate::parser::ExprParser;
 
 pub trait Evaluateur {
     fn eval(&self, vm: &mut Vm) -> Result<Value, Error>;
@@ -247,11 +249,26 @@ impl Vm {
     }
 }
 
-pub fn execute_file(path: &str) -> Vm {
-    lalrpop_mod!(pub popper);
-    let string = fs::read_to_string(path).unwrap();
-    let expr = popper::ExprsParser::new().parse(&string).unwrap();
+pub fn execute_file(file: &str) -> Result<Vm, String> {
+    let content = fs::read_to_string(file).unwrap();
+    let mut result = ExprParser::parse(crate::parser::Rule::program, &content);
     let mut vm = Vm::new();
-    expr.eval(&mut vm).unwrap();
-    return vm;
+    match result {
+        Ok(ref mut e) => {
+            for rule in e {
+                
+                match build_ast(rule) {
+                    Ok(ast) => {
+                        ast.eval(&mut vm)
+                    }
+                    Err(e) => {
+                        return Err(e);
+                    }
+                };
+            };
+
+        },
+        Err(e) => return Err(e.to_string())
+    };
+    Ok(vm)
 }
