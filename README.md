@@ -1,6 +1,6 @@
 # Popper-lang
 
-![Popper-lang Logo](https://example.com/popper-lang-logo.png)
+![Popper-lang Logo](/logo.png)
 
 **Popper-lang** is a versatile programming language written in Rust that simplifies complex tasks. This repository serves as the command-line interface (CLI) for Popper-lang, providing users with a seamless way to interact with the language. Additionally, it acts as a central hub for the Popper-lang ecosystem, bringing together the core components of the project: **Popper-compiler** and **Popper-cpu**.
 
