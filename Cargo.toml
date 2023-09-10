@@ -6,3 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+popper_compiler = { git = "https://github.com/popper-lang/popper-compiler.git" }
+popper_cpu = { git = "https://github.com/popper-lang/popper-cpu.git", features = ["debug", "parse"] }
+clap = { version = "4.3.5", features = ["color", "derive"] }
+rustyline = "11.0.0"
+
