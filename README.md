@@ -78,7 +78,7 @@ For a more comprehensive guide on the Popper-lang syntax and language features, 
 We welcome contributions from the Rust and Popper-lang community! If you'd like to contribute to the Popper-lang project, please follow our Contribution Guidelines.
 
 # License
-Popper-lang is open-source software released under [the MIT License](/LICENSE). Feel free to use, modify, and distribute it in accordance with the terms of the license.
+Popper-lang is open-source software released under [the GNU License](/LICENSE). Feel free to use, modify, and distribute it in accordance with the terms of the license.
 
 # Contact
 If you have any questions, issues, or suggestions regarding Popper-lang, please feel free to open an [issue](https://github.com/popper-lang/popper-lang/issues) on this repository
