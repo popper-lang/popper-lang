@@ -59,7 +59,7 @@ while condition {
     // Code to execute while the condition is true
 }
 ```
-Functions are defined using the fn keyword.
+Functions are defined using the `fun` keyword.
 
 ```
 fun add(a: int, b: int): int {
