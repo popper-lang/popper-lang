@@ -61,8 +61,10 @@ fn main() {
             let ast = get_ast(&std::fs::read_to_string(filename.clone()).unwrap(), &filename.clone());
             match ast {
                 Some(ast) => {
+
                     let res =
                         check_program(ast, &std::fs::read_to_string(filename.clone()).unwrap(), &filename.clone());
+                
                     if res {
                         println!("No errors found");
                     }
@@ -74,12 +76,12 @@ fn main() {
         },
         Commands::Compile { filename } => {
             let body = std::fs::read_to_string(filename.clone()).unwrap();
-            let ir = popper_compile(body.as_str(), &filename);
+            let ir = popper_compile(body.as_str(), &filename, false);
             println!("{}", ir);
         },
         Commands::Execute { filename } => {
             let body = std::fs::read_to_string(filename.clone()).unwrap();
-            let ir = popper_compile(body.as_str(), &filename);
+            let ir = popper_compile(body.as_str(), &filename, false);
             interpret_string(ir.trim());
         },
         Commands::Interpret { filename } => {
@@ -97,8 +99,8 @@ fn main() {
                 match readline {
                     Ok(line) => {
                         rl.add_history_entry(line.as_str()).unwrap();
-                        let ir = popper_compile(line.as_str(), "repl");
-                        interpret_string(ir.as_str());
+                        let ir = popper_compile(line.as_str(), "repl", false);
+                        interpret_string(ir.as_str().trim());
                     }
                     Err(ReadlineError::Interrupted) => {
                         println!("CTRL-C");
